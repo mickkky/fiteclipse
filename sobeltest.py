@@ -83,7 +83,8 @@ background.fill(255)
 
 imag = cv2.drawContours(background, contourlist, 3, (0, 0, 0), 1)
 background_gray = cv2.cvtColor(imag, cv2.COLOR_BGR2GRAY)
-ret1, binbackground = cv2.threshold(background_gray, 0, 255,cv2.THRESH_BINARY)
+
+ret, binbackground = cv2.threshold(img_part_gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
 sobelconx = cv2.Sobel(binbackground, cv2.CV_64F, 1, 0, ksize=3)
 sobelcony = cv2.Sobel(binbackground, cv2.CV_64F, 0, 1, ksize=3)
@@ -92,8 +93,10 @@ condst = and_demo(sobelconx , sobelcony)
 
 sobel_cont_arr = Image.fromarray(condst)
 
-sobel_cont_image = np.array(sobel_cont_arr.astype(np.uint8))
+sobel_cont_image = np.array(condst.astype(np.uint8))
 
+cv2.imshow('sobel_cont_image',sobel_cont_image)
+cv2.waitKey(0)
 kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(5, 5))
 opened = cv2.morphologyEx(sobel_cont_image, cv2.MORPH_OPEN, kernel)
 cv2.imshow("opened",opened)
