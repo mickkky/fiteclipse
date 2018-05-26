@@ -26,13 +26,13 @@ def not_demo(m1):     #非运算   每个像素点每个通道的值按位取反
     cv2.imshow("not_demo", dst)
 
 
-img = cv2.imread('/home/wangbenkang/桌面/test1.jpg')
-
+# img = cv2.imread('/home/wangbenkang/桌面/test1.jpg')
+img = cv2.imread('/Users/wangbenkang/Desktop/test1.jpg')
 X1 = 1084
 Y1 = 1571
 
-X2 = 1167
-Y2 = 1666
+X2 = 1250
+Y2 = 1700
 
 W = abs(X1-X2)
 H = abs(Y1-Y2)
@@ -44,7 +44,7 @@ img_part_gray = cv2.cvtColor(img_part, cv2.COLOR_BGR2GRAY)
 ret, thresh = cv2.threshold(img_part_gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
 
-sobelx=cv2.Sobel(thresh,cv2.CV_64F,1,0,ksize=3)
+sobelx=cv2.Sobel(thresh,cv2.CV_64F,1,1,ksize=3)
 sobely=cv2.Sobel(thresh,cv2.CV_64F,0,1,ksize=3)
 
 # image, contourlist, hierarchy = cv2.findContours(thresh, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE)
@@ -58,7 +58,8 @@ anddst = and_demo(sobelx,sobely)
     #     for j in range(0,len(anddst[0])):
 image = Image.fromarray(anddst)
 array = np.array(anddst.astype(np.uint8))
-cv2.imshow('imge',array)
+cv2.imshow('imge',sobelx)
+cv2.waitKey(0)
 # im = array.convert("CV_8UC1")
 
 # kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(10, 10))
@@ -80,30 +81,38 @@ background.fill(255)
 #     sobelcony = cv2.Sobel(background, cv2.CV_64F, 0, 1, ksize=3)
 #     anddst = and_demo(sobelx,sobely)
 
+imag = cv2.drawContours(background, contourlist, 3, (0, 0, 0), 5)
 
-imag = cv2.drawContours(background, contourlist, 3, (0, 0, 0), 1)
-background_gray = cv2.cvtColor(imag, cv2.COLOR_BGR2GRAY)
-
-ret, binbackground = cv2.threshold(img_part_gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-
-sobelconx = cv2.Sobel(binbackground, cv2.CV_64F, 1, 0, ksize=3)
-sobelcony = cv2.Sobel(binbackground, cv2.CV_64F, 0, 1, ksize=3)
-
-condst = and_demo(sobelconx , sobelcony)
-
-sobel_cont_arr = Image.fromarray(condst)
-
-sobel_cont_image = np.array(condst.astype(np.uint8))
-
-cv2.imshow('sobel_cont_image',sobel_cont_image)
-cv2.waitKey(0)
-kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(5, 5))
-opened = cv2.morphologyEx(sobel_cont_image, cv2.MORPH_OPEN, kernel)
-cv2.imshow("opened",opened)
+cv2.imshow('background',background)
 cv2.waitKey(0)
 
-nonzero=np.nonzero(condst)
-print(nonzero)
+houghcircles = cv2.HoughCircles(background, cv2.HOUGH_GRADIENT, 1, 100, param1=50, param2=2, minRadius=0, maxRadius=300)
+
+
+background_gray = cv2.cvtColor(background, cv2.COLOR_BGR2GRAY)
+
+ret, binbackground = cv2.threshold(background_gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+
+
+# sobelconx = cv2.Sobel(binbackground, cv2.CV_64F, 1, 0, ksize=3)
+# sobelcony = cv2.Sobel(binbackground, cv2.CV_64F, 0, 1, ksize=3)
+#
+# condst = and_demo(sobelconx , sobelcony)
+#
+# sobel_cont_arr = Image.fromarray(condst)
+#
+# sobel_cont_image = np.array(condst.astype(np.uint8))
+#
+# cv2.imshow('sobel_cont_image',sobel_cont_image)
+# cv2.waitKey(0)
+# kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(5, 5))
+# opened = cv2.morphologyEx(sobel_cont_image, cv2.MORPH_OPEN, kernel)
+# cv2.imshow("opened",opened)
+# cv2.waitKey(0)
+#
+# nonzero=np.nonzero(condst)
+# print(nonzero)
 
 
 cv2.imshow('cont',imag)
