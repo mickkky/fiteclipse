@@ -68,9 +68,6 @@ def Hamming_distance(threshimg1, threshimg2):
 
 
 
-
-
-
 img = cv2.imread('/Users/wangbenkang/Desktop/test1.jpg')
 
 X1 = 1084
@@ -122,7 +119,7 @@ for i in range(len(contourlist)):
     print(len(contourlist[1]))
     print(type(lines))
     if type(lines) != type(a):
-        if len(contourlist[i])> 8:
+        if len(contourlist[i])> 20:
             contour_in_background = cv2.drawContours(img_part, contourlist, i, (0, 255, 155), 4)
             ellipse = cv2.fitEllipse(contourlist[i])
             eclipse_img_inpart = cv2.ellipse(img_part, ellipse, (0, 255, 155), 2)
@@ -139,18 +136,13 @@ for i in range(len(contourlist)):
     # hamminglist.append(distance)
     # contlen.append(len(contourlist[i]))
 
-# 生成纯色图像
-# ellipseIndex = hamminglist.index(min(hamminglist))
-
-# background = img_part_gray.copy()
-background.fill(0)
 
 # contour_in_background = cv2.drawContours(background, contourlist, 4, (255, 255, 255), 1)
 
 # distance = Hamming_distance(contour_in_background,DILATE)
 # print distance
-ellipsecont= cv2.drawContours(background, contourlist, 1, (255, 255, 255), 1)
-cv2.imshow("ellipsecont",ellipsecont)
+# ellipsecont= cv2.drawContours(background, contourlist, 1, (255, 255, 255), 1)
+# cv2.imshow("ellipsecont",ellipsecont)
 cv2.imshow("img_part", img_part)
 cv2.waitKey(0)
 
