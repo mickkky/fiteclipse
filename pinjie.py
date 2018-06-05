@@ -1,10 +1,18 @@
 # -*- coding: utf-8 -*-
 import os
-import cv2
-import numpy
-from PIL import Image
 
+import cv2
+import numpy as np
+from PIL import Image
 # UNIT_SIZE = 229 # the size of image
+
+def opecv2plt(imread):
+    imageplt = Image.fromarray(cv2.cvtColor(imread, cv2.COLOR_RGB2GRAY))
+    return imageplt
+def plt2opencv(imgopen):
+    imgread = cv2.cvtColor(np.asarray(imgopen), cv2.COLOR_GRAY2RGB)
+    return imgread
+
 def pinjie(images,row,col,imagname):
 
     w, h = images[0].size
@@ -26,16 +34,15 @@ def pinjie(images,row,col,imagname):
     target.save(imagname+'.jpg', quality = quality_value)
 
 
-def splitimage(img, rownum, colnum, dstpath):
+def splitimage(img, rownum, colnum, imgname):
     # img = Image.open(src)
     w, h = img.size
     if rownum <= h and colnum <= w:
         print('Original image info: %sx%s, %s, %s' % (w, h, img.format, img.mode))
         print('开始处理图片切割, 请稍候...')
 
-        s = os.path.split(src)
-        if dstpath == '':
-            dstpath = s[0]
+        s = os.path.split(imgname)
+
         fn = s[1].split('.')
         basename = fn[0]
         ext = 'png'
@@ -51,27 +58,33 @@ def splitimage(img, rownum, colnum, dstpath):
                 # a=img.crop(box)
                 imagelist.append(img.crop(box))
 
-                imagepiece = cv2.cvtColor(numpy.asarray(img.crop(box)), cv2.COLOR_RGB2GRAY)
+                # imagepiece = cv2.cvtColor(numpy.asarray(img.crop(box)), cv2.COLOR_GRAY2RGB)
+                imagepiece = plt2opencv(img.crop(box))
                 a = imagepiece.shape
                 imagepieces.append(imagepiece)
                 # cv2.imshow('sss',imagepiece)
                 # cv2.waitKey(0)
 
-                img.crop(box).save(os.path.join(dstpath, basename + '_' + str(num) + '.' + ext), ext)
+                img.crop(box).save(os.path.join( basename + '_' + str(num) + '.' + ext), ext)
                 num = num + 1
 
         print('图片切割完毕，共生成 %s 张小图片。' % num)
         return imagelist
     else:
         print('不合法的行列切割参数！')
-
+        return 0
 
 row = 2
 col = 2
-src = 'test1.jpg'
-dstpath = ''
-img = Image.open(src)
-imalist = splitimage(img, row, col, dstpath)
+imgname = 'test1.jpg'
+
+imread = cv2.imread(imgname)
+
+imgplt = opecv2plt(imread)
+img = Image.open(imgname)
+
+
+imalist = splitimage(imgplt, row, col, imgname)
 
 
 imagname ='test'
